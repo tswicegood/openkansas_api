@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.gis.db import models
 from django.core.exceptions import ImproperlyConfigured
 from geopy import geocoders
+import re
 
 if not hasattr(settings, 'YAHOO_MAPS_APP_ID'):
     raise ImproperlyConfigured(
@@ -47,6 +48,25 @@ class District(models.Model):
     type = models.CharField(max_length=3, choices=TYPE_CHOICES)
 
     objects = DistrictManager()
+    nick_name_matcher = re.compile(".*\(([^)]+)\).*")
+
+    def get_url_name(self):
+        return self.full_name.replace(' ', '-')
+    url_name = property(get_url_name)
+
+    def fetch_image_url(self):
+        match = self.__class__.nick_name_matcher.match(self.first_name)
+        if match is not None:
+            first_name = match.groups()[0]
+        else:
+            first_name = self.first_name.split(' ')[0]
+        return "http://www.kslegislature.org/houseroster/images/%s,%s.jpg" % (
+            self.last_name.lower(), first_name.lower()
+        )
+
+    def get_full_name(self):
+        return "%s %s" % (self.first_name, self.last_name)
+    full_name = property(get_full_name)
 
     def __unicode__(self):
         return "District #%s: %s, %s (%s)" % (

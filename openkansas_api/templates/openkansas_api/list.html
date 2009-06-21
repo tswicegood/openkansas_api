@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<ul>
+{% for district in object_list %}
+    <li><a href="{% url openkansas_api_details district.get_type_display.lower district.district district.url_name %}">{{ district }}</a>
+{% endfor %}
+</ul>
+
+{% endblock %}
