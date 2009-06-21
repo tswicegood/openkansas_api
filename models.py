@@ -9,6 +9,10 @@ class DistrictManager(models.GeoManager):
     def with_lat_lng(self, lat, lng):
         return self.filter(poly__contains='POINT(%s %s)' % (lng, lat))
 
+    def with_district_first_and_last_names(self, district, first_name, last_name):
+        return self.filter(district = district, first_name = first_name,
+                           last_name = last_name)
+
 class District(models.Model):
     district = models.IntegerField()
     type = models.CharField(max_length = 3, choices=TYPE_CHOICES)
@@ -18,6 +22,7 @@ class District(models.Model):
     poly=models.PolygonField()
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
+    type = models.CharField(max_length=3, choices=TYPE_CHOICES)
 
     objects = DistrictManager()
 
