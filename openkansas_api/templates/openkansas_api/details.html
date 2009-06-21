@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+{% block title %}
+Kansas {{ district.get_type_display }}, District #{{ district.district }}, {{ district.full_name }} ({{ district.party }})
+{% endblock %}
 {% block content %}
 
 {{ district }}
