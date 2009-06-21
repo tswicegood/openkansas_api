@@ -1,8 +1,11 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from openkansas_api.models import District
 # Create your views here.
 
 def handle_query(request):
+    if not request.GET.has_key('q'):
+        return redirect('openkansas_api_index')
+
     (geodata, object_list) = District.objects.by_geocode(request.GET['q'])
     return render_to_response('openkansas_api/list.html', {
         'object_list': object_list,
