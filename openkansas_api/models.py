@@ -17,7 +17,7 @@ TYPE_CHOICES = (
     ('SEN', 'Senator'),
 )
 
-class DistrictManager(models.GeoManager):
+class RepresentativeManager(models.GeoManager):
     def by_geocode(self, query):
         place, (lat, lng) = geocoder.geocode(query)
         return (
@@ -36,7 +36,7 @@ class DistrictManager(models.GeoManager):
         return self.filter(district = district, first_name = first_name,
                            last_name = last_name)
 
-class District(models.Model):
+class Representative(models.Model):
     district = models.IntegerField()
     type = models.CharField(max_length = 3, choices=TYPE_CHOICES)
     first_name = models.CharField(max_length = 255)
@@ -47,7 +47,7 @@ class District(models.Model):
     end_date = models.DateField(blank=True, null=True)
     type = models.CharField(max_length=3, choices=TYPE_CHOICES)
 
-    objects = DistrictManager()
+    objects = RepresentativeManager()
     nick_name_matcher = re.compile(".*\(([^)]+)\).*")
 
     def get_url_name(self):
@@ -60,7 +60,9 @@ class District(models.Model):
             first_name = match.groups()[0]
         else:
             first_name = self.first_name.split(' ')[0]
-        return "http://www.kslegislature.org/houseroster/images/%s,%s.jpg" % (
+
+        return "http://www.kslegislature.org/%sroster/images/%s,%s.jpg" % (
+            {'SEN': 'senate', 'REP': 'house'}[self.type],
             self.last_name.lower(), first_name.lower()
         )
 

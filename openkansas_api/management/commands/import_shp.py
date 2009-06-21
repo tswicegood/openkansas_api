@@ -1,16 +1,16 @@
 from django.core.management.base import BaseCommand
 from django.contrib.gis.gdal import DataSource
 from django.contrib.gis.utils import LayerMapping
-from openkansas_api.models import District
+from openkansas_api.models import Representative
 
 def set_type_to(type, lm_entry):
-    d = District.objects.with_district_first_and_last_names(
+    r = Representative.objects.with_district_first_and_last_names(
         lm_entry['DISTRICT'].as_int(),
         lm_entry['FIRST_NAME'].as_string(),
         lm_entry['LAST_NAME'].as_string(),
     )[0]
-    d.type = type
-    d.save()
+    r.type = type
+    r.save()
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
@@ -22,7 +22,7 @@ class Command(BaseCommand):
             "party": "PARTY",
             "poly": "POLYGON",
         }
-        lm = LayerMapping(District, source_file, mapping)
+        lm = LayerMapping(Representative, source_file, mapping)
         lm.save(verbose=True)
 
         # manually loop over the fields and set the representative

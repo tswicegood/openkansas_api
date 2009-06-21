@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block title %}
-Kansas {{ district.get_type_display }}, District #{{ district.district }}, {{ district.full_name }} ({{ district.party }})
+Kansas {{ representative.get_type_display }}, District #{{ representative.representative }}, {{ representative.full_name }} ({{ representative.party }})
 {% endblock %}
 {% block content %}
 
-{{ district }}
+{{ representative }}
 
-<img src="{{ district.fetch_image_url }}" />
+<img src="{{ representative.fetch_image_url }}" />
 
 {% endblock %}
 

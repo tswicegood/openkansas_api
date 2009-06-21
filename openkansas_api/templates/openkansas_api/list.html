@@ -3,8 +3,8 @@
 {% block content %}
 
 <ul>
-{% for district in object_list %}
-    <li><a href="{% url openkansas_api_details district.get_type_display.lower district.district district.url_name %}">{{ district }}</a>
+{% for representative in object_list %}
+    <li><a href="{% url openkansas_api_details representative.get_type_display.lower representative.district representative.url_name %}">{{ representative }}</a>
 {% endfor %}
 </ul>
 
