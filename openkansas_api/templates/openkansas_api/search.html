@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+Find your Kansas Senator and Representative
+{% endblock %}
+{% block content %}
+<div>
+    <img src="http://openkansas.org/i/openkansas-v2.png" />
+
+    <fieldset>
+        <legend>Find your Kansas Senator and Representative</legend>
+
+        <form action="{% url openkansas_api_query %}" method="GET">
+            <dl>
+                <dt>Location</dt>
+                <dd>
+                    <input class="input-hint" name="q" type="text" 
+                           title="e.g., 66044, 'Massachusetts and 9th, Lawrence, Kansas', etc." />
+                </dd>
+            </dl>
+
+            <p class="controls">
+                <input type="submit" value="Look them up..." />
+            </p>
+        </form>
+    </fieldset
+</div>
+{% endblock %}
+
+

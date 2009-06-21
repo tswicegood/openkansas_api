@@ -8,6 +8,9 @@ def handle_query(request):
         'object_list': object_list,
     })
 
+def handle_index(request):
+    return render_to_response('openkansas_api/search.html')
+
 def handle_details(request, type, district, *args):
     real_type = type[0:3].upper()
     district = District.objects.get(type = real_type, district = district)
