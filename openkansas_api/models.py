@@ -33,8 +33,11 @@ class RepresentativeManager(models.GeoManager):
         return self.filter(poly__contains='POINT(%s %s)' % (lng, lat))
 
     def with_district_first_and_last_names(self, district, first_name, last_name):
-        return self.filter(district = district, first_name = first_name,
-                           last_name = last_name)
+        return self.filter(district = district, first_name__contains = first_name,
+                           last_name__contains = last_name)
+
+    def with_district_and_last_name(self, district, last_name):
+        return self.filter(district = district, last_name__contains = last_name)
 
 class Representative(models.Model):
     district = models.IntegerField()
@@ -77,4 +80,21 @@ class Representative(models.Model):
             self.first_name,
             self.party,
         )
+
+class Address(models.Model):
+    street_address = models.CharField(max_length = 255)
+    street_address_2 = models.CharField(max_length = 255, blank = True, null = True)
+    city = models.CharField(max_length = 255)
+    zipcode = models.CharField(max_length = 10)
+    type = models.CharField(max_length = 10)
+    representative = models.ForeignKey(Representative, related_name="addresses")
+
+class EmailAddress(models.Model):
+    email = models.EmailField()
+    type = models.CharField(max_length = 25)
+    representative = models.ForeignKey(Representative, related_name="email_addresses")
+
+class CapitalOffice(models.Model):
+    room = models.CharField(max_length = 25)
+    representative = models.ForeignKey(Representative, related_name="offices")
 
