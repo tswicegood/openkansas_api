@@ -17,6 +17,11 @@ TYPE_CHOICES = (
     ('SEN', 'Senator'),
 )
 
+PARTY_CHOICES = (
+    ('D', 'Democrat'),
+    ('R', 'Republican'),
+)
+
 class RepresentativeManager(models.GeoManager):
     def by_geocode(self, query):
         place, (lat, lng) = geocoder.geocode(query)
@@ -44,7 +49,7 @@ class Representative(models.Model):
     type = models.CharField(max_length = 3, choices=TYPE_CHOICES)
     first_name = models.CharField(max_length = 255)
     last_name = models.CharField(max_length = 255)
-    party = models.CharField(max_length = 3)
+    party = models.CharField(max_length = 3, choices=PARTY_CHOICES)
     poly=models.PolygonField()
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
@@ -73,6 +78,19 @@ class Representative(models.Model):
         return "%s %s" % (self.first_name, self.last_name)
     full_name = property(get_full_name)
 
+    def get_party_adjective(self):
+        return {
+            'R': 'Republican',
+            'D': 'Democratic',
+        }[self.party]
+
+    def get_official_phone(self):
+        try:
+            return self.phone_numbers.filter(type = 'O')[0]
+        except IndexError:
+            pass
+    official_phone = property(get_official_phone)
+
     def __unicode__(self):
         return "District #%s: %s, %s (%s)" % (
             self.district,
@@ -97,4 +115,18 @@ class EmailAddress(models.Model):
 class CapitalOffice(models.Model):
     room = models.CharField(max_length = 25)
     representative = models.ForeignKey(Representative, related_name="offices")
+
+
+PHONE_TYPE_CHOICES = (
+    ('O', 'Office'),
+    ('H', 'Home'),
+)
+
+class Phone(models.Model):
+    phone = models.CharField(max_length = 20)
+    type = models.CharField(max_length = 1, choices=PHONE_TYPE_CHOICES)
+    representative = models.ForeignKey(Representative, related_name="phone_numbers")
+
+    def __unicode__(self):
+        return self.phone
 

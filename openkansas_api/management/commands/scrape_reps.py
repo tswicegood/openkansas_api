@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.gis.gdal import DataSource
 from django.contrib.gis.utils import LayerMapping
-from openkansas_api.models import Representative, Address, CapitalOffice, EmailAddress
+from openkansas_api.models import Representative, Address, CapitalOffice, EmailAddress, Phone
 from pyquery import PyQuery
 import re
 import sys
@@ -60,22 +60,32 @@ def add_address_from_raw_data(raw_data, rep, model = Address):
 def add_capital_office_email_and_committee(doc, rep):
     raw = doc("td:contains('Office')")[-1].text_content()
     # TODO: clean this up into something more elegant
-    is_office = is_email = False
+    is_phone = is_office = is_email = False
     for foo in raw.strip().split():
-        if is_office:
-            is_office = False
+        if is_office is True:
+            is_office = "DONE"
             add_captial_office(rep, foo)
             continue
-        elif is_email:
+        
+        if is_email is True:
             is_email = False
             add_official_email(rep, foo.strip("Committee"))
             continue
 
-        if foo == "Room:":
+        if is_phone is True:
+            is_phone = False
+            add_official_phone(rep, foo)
+
+        if foo == "Room:" and is_office != "DONE":
             is_office = True
             continue
-        elif foo == "Email:":
+
+        if foo == "Email:":
             is_email = True
+            continue
+
+        if foo == "Phone:":
+            is_phone = True
             continue
 
 
@@ -93,6 +103,16 @@ def add_official_email(rep, email):
         type = "Official"
     )
     email.save()
+
+def add_official_phone(rep, phone):
+    if len(phone) == 8:
+        phone = '785-' + phone
+    p = Phone.objects.create(
+        representative = rep,
+        phone = phone,
+        type = 'O',
+    )
+    p.save()
  
 def scrape_info(raw, roster_url):
 
