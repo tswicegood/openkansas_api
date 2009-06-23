@@ -5,9 +5,57 @@ Kansas {{ representative.get_type_display }}, District #{{ representative.repres
 {% endblock %}
 {% block content %}
 
-{{ representative }}
+<span class="vcard">
 
-<img src="{{ representative.fetch_image_url }}" />
+    <div style="float:left;">
+        <img class="photo" src="{{ representative.fetch_image_url }}" alt="Official photo of {{ representative.full_name }}" />
+    </div>
+
+    <div>
+        <h1><span class="fn">{{ representative.full_name }}</span></h1>
+
+        <p>
+            {{ representative.get_party_adjective }}
+            {{ representative.get_type_display }}
+            for District #{{ representative.district }}
+        </p>
+
+        <dl>
+            <dt>Capital Office</dt>
+            <dd>
+                <div class="office-room">{% if representative.offices.all %}
+                Room: {{ representative.offices.all.0.room }}
+                {% endif %}
+                </div>
+
+                <div>
+                    <span class="phone">
+                        <span class="type">Office</span>:
+                        <span class="value">{{ representative.official_phone }}</span>
+                    </span>
+
+                </div>
+
+            </dd>
+        </dl>
+
+        <span class="adr">
+        <dl>
+            <dt><span class="type">Home</span> Address</dt>
+            <dd>
+                <div class="street-address">{{ representative.home_address.street_address }}</div>
+                <div>
+                    <span class="locality">{{ representative.home_address.city }}</span>,
+                    <abbr class="region" title="Kansas">KS</abbr>
+                    {% if representative.home_address.zipcode %}
+                    <span class="postal-code">{{ representative.home_address.zipcode }}</span>
+                    {% endif %}
+                </div>
+            </dd>
+        </dl>
+
+    </div>
+</span>
 
 {% endblock %}
 
