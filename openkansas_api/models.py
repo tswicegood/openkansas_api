@@ -91,6 +91,15 @@ class Representative(models.Model):
             pass
     official_phone = property(get_official_phone)
 
+    def get_home_address(self):
+        if not hasattr(self, '_home_address'):
+            try:
+                self._home_address = self.addresses.filter(type = 'Home')[0]
+            except IndexError:
+                self._home_address = None
+        return self._home_address
+    home_address = property(get_home_address)
+
     def __unicode__(self):
         return "District #%s: %s, %s (%s)" % (
             self.district,
