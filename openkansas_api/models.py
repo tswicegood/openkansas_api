@@ -4,13 +4,13 @@ from django.core.exceptions import ImproperlyConfigured
 from geopy import geocoders
 import re
 
-if not hasattr(settings, 'YAHOO_MAPS_APP_ID'):
+if not hasattr(settings, 'GOOGLE_MAPS_KEY'):
     raise ImproperlyConfigured(
-        "openkansas_api requires a YAHOO_MAPS_APP_ID configuration "
+        "openkansas_api requires a GOOGLE_MAPS_KEY configuration "
         "setting.  Please add it to your settings.py file."
     )
 
-geocoder = geocoders.Yahoo(settings.YAHOO_MAPS_APP_ID)
+geocoder = geocoders.Google(settings.GOOGLE_MAPS_KEY)
 
 TYPE_CHOICES = (
     ('REP', 'Representative'),
