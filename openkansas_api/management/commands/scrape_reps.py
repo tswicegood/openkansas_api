@@ -42,20 +42,23 @@ def find_rep(raw, doc):
 
 def add_address_from_raw_data(raw_data, rep, model = Address):
     raw_data_list = raw_data.split("\n")
-    city_zip = raw_data_list[1].split()
+    raw_street_address = raw_data_list[0]
     if rep.type == "SEN":
-        street_address = raw_data_list[0]
-        city = raw_data_list[1].strip("Business Information")
-        zipcode = 555555
+        raw_city = raw_data_list[1].replace("Business Information", '')
     else:
-        street_address, city, zipcode = raw_data_list[0], ' '.join(city_zip[0:-1]), city_zip[-1]
-    address = model()
-    address.street_address = street_address
-    address.city = city.capitalize()
-    address.zipcode = zipcode
-    address.type = 'Home'
-    address.representative = rep
-    address.save()
+        city_zip = raw_data_list[1].split()
+        raw_city = ' '.join(city_zip[0:-1])
+
+    a = Address.objects.create_from_geo(
+        "%s %s" % (raw_street_address, raw_city),
+        rep
+    )
+    if a is not None:
+        a.type = 'Home'
+        a.save()
+    else:
+        sys.stderr.write("\nUnable to create address for %s\nTried: %s %s, KS\n" % (
+            rep, raw_street_address, raw_city))
 
 def add_capital_office_email_and_committee(doc, rep):
     raw = doc("td:contains('Office')")[-1].text_content()
@@ -69,7 +72,7 @@ def add_capital_office_email_and_committee(doc, rep):
         
         if is_email is True:
             is_email = False
-            add_official_email(rep, foo.strip("Committee"))
+            add_official_email(rep, foo.replace("Committee", ''))
             continue
 
         if is_phone is True:
