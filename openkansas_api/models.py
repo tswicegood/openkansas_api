@@ -165,6 +165,14 @@ class Address(models.Model):
     def __unicode__(self):
         return "%s: %s, %s" % (self.type, self.street_address, self.city)
 
+    def get_lat(self):
+        return self.point.get_coords()[1]
+    lat = property(get_lat)
+
+    def get_lng(self):
+        return self.point.get_coords()[0]
+    lng = property(get_lng)
+
 class EmailAddress(models.Model):
     email = models.EmailField()
     type = models.CharField(max_length = 25)
