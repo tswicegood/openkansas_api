@@ -5,13 +5,14 @@ Kansas {{ representative.get_type_display }}, District #{{ representative.repres
 {% endblock %}
 {% block content %}
 
+<div class="representative">
 <span class="vcard">
 
-    <div style="float:left;">
+    <div style="float:left;" class="rep-photo">
         <img class="photo" src="{{ representative.fetch_image_url }}" alt="Official photo of {{ representative.full_name }}" />
     </div>
 
-    <div>
+    <div class="rep-info">
         <h1><span class="fn">{{ representative.full_name }}</span></h1>
 
         <p>
@@ -57,6 +58,7 @@ Kansas {{ representative.get_type_display }}, District #{{ representative.repres
 
     </div>
 </span>
+</div>
 
 {% endblock %}
 
