@@ -52,6 +52,9 @@ Kansas {{ representative.get_type_display }}, District #{{ representative.repres
                     <span class="postal-code">{{ representative.home_address.zipcode }}</span>
                     {% endif %}
                 </div>
+
+                <div id="rep_home_map">
+                </div>
             </dd>
         </dl>
         </span>
@@ -60,5 +63,27 @@ Kansas {{ representative.get_type_display }}, District #{{ representative.repres
 </span>
 </div>
 
+{% endblock %}
+
+{% block extra_footer %}
+<p> {{representative.home_address.get_coords}}</p>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+
+jQuery(document).ready(function() {
+    var lat_lng = new google.maps.LatLng({{ representative.home_address.lat }}, {{ representative.home_address.lng }});
+    var myOptions = {
+      zoom: 13,
+      center: lat_lng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(jQuery('#rep_home_map')[0], myOptions);
+    var marker = new google.maps.Marker({
+        position:lat_lng,
+        map:map
+    });
+});
+
+</script>
 {% endblock %}
 
