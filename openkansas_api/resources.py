@@ -37,3 +37,12 @@ class RepresentativeHandler(BaseHandler):
 class RepresentativeWithPolyHandler(RepresentativeHandler):
     fields = REPRESENTATIVE_FIELDS + ('poly',)
 
+
+class SearchHandler(BaseHandler):
+    allowed_methods = ('GET',)
+    model = Representative
+    fields = REPRESENTATIVE_FIELDS
+
+    def read(self, request, query):
+        _, ret = Representative.objects.by_geocode(query)
+        return ret
