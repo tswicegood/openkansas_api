@@ -196,3 +196,37 @@ class Phone(models.Model):
     def __unicode__(self):
         return self.phone
 
+
+class LinkManager(models.Manager):
+    def create_link_for_rep(self, title, url, representative):
+        # TODO: allow name to be a full rep as well
+        first_name, last_name = representative.split(" ", 2)
+        rep = Representative.objects.filter(
+            first_name__startswith = first_name,
+            last_name__startswith = last_name
+        )
+
+        # TODO: change these around so they fit more idiomatically
+        if rep.count() == 0:
+            raise Exception, "Unable to locate %s" % representative
+        elif rep.count() > 1:
+            raise Exception, "More than one %s was located" % representative
+
+        link = self.create(
+            title = title,
+            url = url,
+            representative = rep[0]
+        )
+        return link
+
+class Link(models.Model):
+    title = models.CharField(max_length = 100)
+    url = models.URLField(max_length = 255)
+    representative = models.ForeignKey(Representative, related_name='links')
+
+    objects = LinkManager()
+
+    def __unicode__(self):
+        return "%s <%s>" % (self.title, self.url)
+
+
