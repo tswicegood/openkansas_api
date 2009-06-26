@@ -8,11 +8,11 @@ Find your Kansas Senator and Representative
     <fieldset>
         <legend>Find your Kansas Senator and Representative</legend>
 
-        <form action="{% url openkansas_api_query %}" method="GET">
+        <form id="find-rep-form" action="{% url openkansas_api_query %}" method="GET">
             <dl>
                 <dt>Location</dt>
                 <dd>
-                    <input class="input-hint" name="q" type="text" 
+                    <input class="input-hint" id="find-rep-input" name="q" type="text"
                            title="e.g., 66044, 'Massachusetts and 9th, Lawrence, Kansas', etc." />
                 </dd>
             </dl>
@@ -25,4 +25,15 @@ Find your Kansas Senator and Representative
 </div>
 {% endblock %}
 
-
+{% block extra_footer %}
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery('#find-rep-form').submit(function(event) {
+        event.stopPropagation();
+        var location = this.action + encodeURIComponent(jQuery('#find-rep-input')[0].value);
+        window.location = location;
+        return false;
+    });
+});
+</script>
+{% endblock %}

@@ -2,11 +2,14 @@ from django.shortcuts import render_to_response, redirect
 from openkansas_api.models import Representative
 # Create your views here.
 
-def handle_query(request):
-    if not request.GET.has_key('q'):
-        return redirect('openkansas_api_index')
+def handle_query(request, query = None):
+    if query is None:
+        if request.GET.has_key('q'):
+            return redirect('openkansas_api_query', request.GET['q'])
+        else:
+            return redirect('openkansas_api_index')
 
-    (geodata, object_list) = Representative.objects.by_geocode(request.GET['q'])
+    (geodata, object_list) = Representative.objects.by_geocode(query)
     return render_to_response('openkansas_api/list.html', {
         'object_list': object_list,
     })
