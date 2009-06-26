@@ -20,6 +20,10 @@ REPRESENTATIVE_FIELDS = (
         'type',
         'phone',
     )),
+    ('links', (
+        'title',
+        'url',
+    )),
 )
 
 
