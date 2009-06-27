@@ -40,6 +40,23 @@ Kansas {{ representative.get_type_display }}, District #{{ representative.repres
             </dd>
         </dl>
 
+        {% if representative.links.all %}
+        <dl>
+            <dt>Links</dt>
+            <dd>
+                <ul>
+                    {% for link in representative.links.all %}
+                    <li>
+                        <a href="{{ link.url }}" title="{{ link.title }}">
+                            {{ link.title }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </dd>
+        </dl>
+        {% endif %}
+
         <span class="adr">
         <dl>
             <dt><span class="type">Home</span> Address</dt>
